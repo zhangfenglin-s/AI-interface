@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			.bigBox{
+				width:600px;
+				height:400px;
+				background:lightcyan;
+				position:absolute;
+				top:50px;
+				left:70px;
+				border:2px solid darkcyan;
+				border-radius:6px;
+				
+			}
+			.head{
+				width:600px;
+				height:70px;
+				background:cadetblue;
+				text-align:center;
+				line-height: 70px;
+			}
+			.bottom{
+				width:600px;
+				height:40px;
+				background:white;
+				position: absolute;
+				bottom: 0;
+				left:0;
+				
+			}
+			input{
+				width:500px;
+				height:34px;
+				position:absolute;
+				bottom:0;
+				left:0;
+				border-color:cadetblue;
+			}
+			button{
+				position:absolute;
+				right:0;
+				bottom:0;
+				background-color:cadetblue;
+				height:40px;
+				width:100px;
+				border-color:green;
+			}
+			.dialog-box{
+				overflow-y:auto;
+				width:600px;
+				height:290px;
+				box-sizing:border-box;
+				padding-top: 10px;
+				padding-bottom:10px;
+			}
+			.right-dialog{
+				width:580px;
+				display:flex;
+				flex-direction:row;
+				justify-content: flex-end;
+				align-items: center;
+				margin-top:10px;
+				margin-bottom:10px;
+				padding-right:20px;
+				box-sizing: border-box;
+			}
+			.left-dialog{
+				width:580px;
+				display:flex;
+				flex-direction:row;
+				align-items: center;
+				margin-top:10px;
+				margin-bottom:10px;
+			}
+			img{
+				width:40px;
+				height:40px;
+			}
+			.chat-right{
+				width:260px;
+				display:flex;
+				justify-content: flex-end;
+				align-items: center;
+			}
+			.chat-left{
+				width:260px;
+				display:flex;
+				align-items: center;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="bigBox">
+			<div class="head">您好，说话吧</div>
+			<div class="dialog-box">
+				<!-- <div class="right-dialog"><div class="chat-right">在吗?</div><img src="img/icon01.png" alt="头像1"></div>
+				<div class="left-dialog"><img src="img/icon02.png" alt="头像2"><div class="chat-left">在的，说话吧</div></div> -->
+			</div>
+			<div class="bottom">
+				<input type="text" placeholder="                               请输入对话内容"></input>
+				<button type="button">发送</button>
+			</div>
+		</div>
+	</body>
+</html>
+<script src="">
+	
+</script>
+<script type="text/javascript">
+	let obtn = document.getElementsByTagName("button")[0];
+	let dialogBox = document.getElementsByClassName("dialog-box")[0];
+	let inp = document.getElementsByTagName("input")[0];
+	
+	obtn.onclick = function(){
+		if(inp.value == ""){
+				setNone();
+		}else{
+			setRightDialog();
+			
+			let chatRight = document.getElementsByClassName("chat-right");
+			let xhr = new XMLHttpRequest();
+			for(let i=0;i<chatRight.length;i++){
+				xhr.open("get","dialog.php?my="+chatRight[i].innerHTML,"true");	//2
+			}
+			xhr.onreadystatechange = function(){//3
+				if(xhr.status == 200 && xhr.readyState == 4){
+					setLeftDialog(xhr.responseText);//5
+				}
+			}
+			xhr.send();//4
+		}
+
+	}
+	function setNone(){
+		let rightDialog = document.createElement("div");
+		rightDialog.innerHTML = ``;
+		dialogBox.appendChild(rightDialog);
+	}
+	function setRightDialog(){
+		let rightDialog = document.createElement("div");
+		rightDialog.innerHTML = `<div class="right-dialog"><div class="chat-right">${inp.value}</div><img src="img/icon01.png" alt="头像1"></div>`;
+		dialogBox.appendChild(rightDialog);
+		inp.value = "";
+		dialogBox.scrollTop = dialogBox.scrollHeight;
+	}
+	function setLeftDialog(Left){
+		let jsonstr = JSON.parse(Left);
+		let leftDialog = document.createElement("div");
+		leftDialog.innerHTML = `<div class="left-dialog"><img src="img/icon02.png" alt="头像2"><div class="chat-left">${jsonstr.content}</div></div>`;
+		dialogBox.appendChild(leftDialog);
+		dialogBox.scrollTop = dialogBox.scrollHeight;
+	}
+	
+</script>
